@@ -1,16 +1,17 @@
 import openpyxl as xl
+from PIL import Image
+import numpy as np
 
 class DataLoader:
-    def __init__(self, filename='data.xlsx', data_size=(6,3)):
-        wb = xl.load_workbook(filename)
-        sh = wb['data']
-        maxr = sh.max_row
-        fullsize = data_size[0] * data_size[1]
+    def __init__(self, filename, data_size=(100, 100)):
+        img = Image.open(filename).convert('L')  
+        img_array = np.array(img)  
         self.__train_set = [
             [
-                1 if sh[chr(i % data_size[1]+ord('A'))+str(i//data_size[1]+1)].value==1 else -1
-                for i in range(k*fullsize, (k+1)*fullsize)
-            ] for k in range(maxr//data_size[0])
+                1 if img_array[y, x] == 0 else -1  
+                for y in range(data_size[0])  
+                for x in range(k * data_size[1], (k + 1) * data_size[1])  
+            ] for k in range(3)  
         ]
 
     def get_data(self):
